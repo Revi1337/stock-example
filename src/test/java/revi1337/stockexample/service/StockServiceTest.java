@@ -8,6 +8,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import revi1337.stockexample.domain.Stock;
 import revi1337.stockexample.repository.StockRepository;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.IntStream;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,6 +39,28 @@ class StockServiceTest {
 
         Stock stock = stockRepository.findById(1L).orElseThrow();
         assertThat(stock.getQuantity()).isEqualTo(99);
+    }
+
+    @Test
+    public void 동시에_100개의_요청() throws InterruptedException {
+        int threadCount = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch countDownLatch = new CountDownLatch(threadCount);
+
+        IntStream.range(0, threadCount).forEach(integer ->
+                executorService.submit(() -> {
+                    try {
+                        stockService.decrease(1L, 1L);
+                    } finally {
+                        countDownLatch.countDown();
+                    }
+                })
+        );
+
+        countDownLatch.await();
+
+        Stock stock = stockRepository.findById(1L).orElseThrow();
+        assertThat(stock.getQuantity()).isEqualTo(0);
     }
 
 }
