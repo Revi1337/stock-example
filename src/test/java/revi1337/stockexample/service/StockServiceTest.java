@@ -19,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class StockServiceTest {
 
-    @Autowired StockService stockService;
-
+    @Autowired PessimisticLockStockService stockService;
+//    @Autowired StockService stockService;
     @Autowired StockRepository stockRepository;
 
     @BeforeEach
