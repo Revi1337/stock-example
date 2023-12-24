@@ -12,6 +12,13 @@ spring:
     hibernate:
       ddl-auto: create
 
+  data:
+    redis:
+      host: host.docker.internal
+      port: 9898
+      repositories:
+        enabled: false
+
 logging:
   level:
     org:

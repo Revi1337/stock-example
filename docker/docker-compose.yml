@@ -8,3 +8,8 @@ services:
       MYSQL_ROOT_PASSWORD: 1234
     ports:
       - "9004:3306"
+
+  redis:
+    image: redis
+    ports:
+      - "9898:6379"
